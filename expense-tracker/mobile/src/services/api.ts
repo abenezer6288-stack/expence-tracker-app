@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { storage } from '../utils/storage';
+import Constants from 'expo-constants';
 
-// For physical device testing, use your computer's IP address
-// For web browser testing, use localhost
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://192.168.99.187:5000/api';
+// Get API URL from app config
+const BASE_URL = Constants.expoConfig?.extra?.apiUrl || 'http://192.168.99.187:5000/api';
 
 const api = axios.create({
   baseURL: BASE_URL,

@@ -54,7 +54,8 @@
       "router": {},
       "eas": {
         "projectId": "431deca2-d809-4306-9cb7-18e8ce45f132"
-      }
+      },
+      "apiUrl": "https://expence-tracker-backend-stny.onrender.com/api"
     }
   }
 }
