@@ -1,5 +1,4 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -98,20 +97,8 @@ export const AppNavigator = () => {
   }
 
   return (
-    <NavigationContainer
-      theme={{
-        dark: isDark,
-        colors: {
-          primary: COLORS.primary,
-          background: colors.background,
-          card: colors.surface,
-          text: colors.text,
-          border: colors.border,
-          notification: COLORS.secondary,
-        },
-      }}
-    >
+    <>
       {isAuthenticated ? <AppStack /> : <AuthStack />}
-    </NavigationContainer>
+    </>
   );
 };
