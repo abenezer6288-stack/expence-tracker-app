@@ -273,7 +273,7 @@ export const AutoTrackSettingsScreen = () => {
               • Lion, Addis, Amhara, Tsehay, Tsedey{'\n'}
               • Goh Betoch, Hijra, ZamZam, Gadaa{'\n'}
               • Rammis, Siket, Sidama, Ahadu{'\n'}
-              • TeleBirr (Mobile Money)
+              • TeleBirr & M-Pesa (Mobile Money)
             </Text>
             <Text style={[styles.supportedTitle, { color: colors.text, fontWeight: '600', marginTop: 12, marginBottom: 8 }]}>
               Other Banks

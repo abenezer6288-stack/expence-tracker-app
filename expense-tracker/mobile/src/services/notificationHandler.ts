@@ -75,7 +75,8 @@ const BANKING_APPS = [
   'siket', 'siket bank',
   'sidama', 'sidama bank',
   'ahadu', 'ahadu bank',
-  'telebirr', 'ethiotelecom',
+  'telebirr', 'ethiotelecom', 'ethio telecom',
+  'mpesa', 'm-pesa', 'm pesa', 'safaricom',
   // Indian banks and UPI
   'sbi', 'hdfc', 'icici', 'axis', 'kotak', 'pnb', 'bob', 'canara',
   'phonepe', 'paytm', 'gpay', 'googlepay', 'bhim', 'upi',

@@ -112,6 +112,7 @@ Send yourself a test notification that looks like a bank notification:
 
 **Mobile Money:**
 - TeleBirr
+- M-Pesa
 
 ### Other Supported Banks
 

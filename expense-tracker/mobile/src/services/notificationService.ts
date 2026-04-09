@@ -145,7 +145,8 @@ export class NotificationService {
       'siket', 'siket bank',
       'sidama', 'sidama bank',
       'ahadu', 'ahadu bank',
-      'telebirr', 'ethiotelecom'
+      'telebirr', 'ethiotelecom', 'ethio telecom',
+      'mpesa', 'm-pesa', 'm pesa', 'safaricom'
     ];
     
     // Check Ethiopian banks first (priority)

@@ -106,6 +106,7 @@ The app detects notifications from:
 
 **Mobile Money:**
 - TeleBirr (Ethio Telecom)
+- M-Pesa (Safaricom)
 
 ### Other Supported Banks
 
