@@ -47,7 +47,8 @@
         }
       ],
       "expo-font",
-      "expo-sharing"
+      "expo-sharing",
+      "./plugins/withAndroidNotificationListener.js"
     ],
     "scheme": "expensetracker",
     "extra": {
