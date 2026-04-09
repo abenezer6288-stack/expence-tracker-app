@@ -240,7 +240,32 @@ export class NotificationService {
       return true;
     } catch (error) {
       console.error('Failed to auto-save expense:', error);
+      
+      // If offline, save to pending queue for later sync
+      if (error.message?.includes('Network') || error.message?.includes('timeout')) {
+        await this.saveToPendingQueue(payment);
+        console.log('Saved to pending queue for offline sync');
+      }
+      
       return false;
+    }
+  }
+
+  // Save to pending queue for offline sync
+  private async saveToPendingQueue(payment: ExtractedPayment) {
+    try {
+      const { storage } = await import('../utils/storage');
+      const pendingStr = await storage.getItem('pendingPayments');
+      const pending = pendingStr ? JSON.parse(pendingStr) : [];
+      
+      pending.push({
+        ...payment,
+        timestamp: Date.now(),
+      });
+      
+      await storage.setItem('pendingPayments', JSON.stringify(pending));
+    } catch (error) {
+      console.error('Failed to save to pending queue:', error);
     }
   }
 }

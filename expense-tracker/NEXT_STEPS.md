@@ -87,7 +87,10 @@ Send yourself a test notification that looks like a bank notification:
 1. **Android Only**: This feature only works on Android (iOS doesn't allow reading other apps' notifications)
 2. **Permission Required**: You must manually enable notification access in Android settings
 3. **Battery Optimization**: Disable battery optimization for the app to ensure background monitoring works
-4. **First Time**: The first time you enable auto-tracking, you'll need to grant permission in settings
+4. **Offline Support**: Notifications are detected even without internet - they sync when connection returns
+5. **No Internet Needed for Detection**: The app reads notifications locally on your phone
+6. **Internet Needed for Sync**: Backend sync requires internet connection
+7. **First Time**: The first time you enable auto-tracking, you'll need to grant permission in settings
 
 ## Troubleshooting
 
@@ -106,9 +109,24 @@ Some Android versions may reset notification access. Re-enable it in settings.
 
 When you enable auto-tracking:
 
-1. **Foreground**: If app is open, you'll see a dialog for each payment
-2. **Background**: Payments are saved automatically (if auto-save is ON)
-3. **Closed**: Payments are queued and saved when you open the app
+1. **Foreground (App Open)**: You'll see a dialog for each payment detected
+2. **Background (App Closed)**: Payments are detected and queued automatically
+3. **Offline Mode**: Payments are saved locally and synced when internet returns
+4. **Auto-Save ON**: Expenses are saved automatically without confirmation
+
+### Offline Behavior
+
+- ✅ Notifications are detected even without internet
+- ✅ Payments are saved to local storage (phone memory)
+- ✅ When internet returns, they sync to the backend automatically
+- ✅ Works even when app is completely closed
+
+### Internet Requirements
+
+- **Detection**: NO internet needed (works offline)
+- **Local Storage**: NO internet needed (saves on phone)
+- **Backend Sync**: YES internet needed (to save to server)
+- **Viewing**: NO internet needed (can view locally saved expenses)
 
 ## Commands to Run
 
