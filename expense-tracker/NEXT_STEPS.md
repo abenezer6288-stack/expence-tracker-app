@@ -77,9 +77,46 @@ Send yourself a test notification that looks like a bank notification:
 
 ## Supported Banks
 
+### Ethiopian Banks (PRIORITY)
+
+**Major Commercial Banks:**
+- Commercial Bank of Ethiopia (CBE)
+- Awash International Bank (AIB)
+- Dashen Bank
+- Bank of Abyssinia (BoA)
+- Nib International Bank
+- Wegagen Bank
+- United Bank
+- Cooperative Bank of Oromia (COOP)
+- Abay Bank
+- Berhan Bank
+- Bunna International Bank
+- Oromia International Bank
+- Enat Bank
+- Debub Global Bank
+- Lion International Bank
+- Addis International Bank
+
+**Newer and Interest-Free Banks:**
+- Amhara Bank
+- Tsehay Bank
+- Tsedey Bank
+- Goh Betoch Bank
+- Hijra Bank (Interest-free)
+- ZamZam Bank (Interest-free)
+- Gadaa Bank
+- Rammis Bank
+- Siket Bank
+- Sidama Bank
+- Ahadu Bank
+
+**Mobile Money:**
+- TeleBirr
+
+### Other Supported Banks
+
 - **Indian**: SBI, HDFC, ICICI, Axis, Kotak, PNB, BOB, Canara
 - **UPI**: PhonePe, Paytm, Google Pay, BHIM
-- **Ethiopian**: CBE, Dashen, Awash, Abyssinia, NIB, Wegagen, TeleBirr
 - **Any bank** with payment keywords in notifications
 
 ## Important Notes

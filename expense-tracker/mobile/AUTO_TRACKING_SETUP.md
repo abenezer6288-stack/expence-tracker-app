@@ -71,21 +71,68 @@ Body: Rs 250.00 debited from A/c XX1234 at Starbucks on 09-Apr-26
 
 The app detects notifications from:
 
+### Ethiopian Banks (PRIORITY - Checked First)
+
+**Major Commercial Banks:**
+- Commercial Bank of Ethiopia (CBE)
+- Awash International Bank (AIB)
+- Dashen Bank
+- Bank of Abyssinia (BoA)
+- Nib International Bank
+- Wegagen Bank
+- United Bank
+- Cooperative Bank of Oromia (COOP)
+- Abay Bank
+- Berhan Bank
+- Bunna International Bank
+- Oromia International Bank
+- Enat Bank
+- Debub Global Bank
+- Lion International Bank
+- Addis International Bank
+
+**Newer and Interest-Free Banks:**
+- Amhara Bank
+- Tsehay Bank
+- Tsedey Bank
+- Goh Betoch Bank (First mortgage bank)
+- Hijra Bank (Interest-free)
+- ZamZam Bank (Interest-free)
+- Gadaa Bank
+- Rammis Bank
+- Siket Bank
+- Sidama Bank
+- Ahadu Bank
+
+**Mobile Money:**
+- TeleBirr (Ethio Telecom)
+
+### Other Supported Banks
+
 - **Indian Banks**: SBI, HDFC, ICICI, Axis, Kotak, PNB, BOB, Canara, etc.
 - **UPI Apps**: PhonePe, Paytm, Google Pay, BHIM
-- **Ethiopian Banks**: CBE, Dashen, Awash, Abyssinia, NIB, Wegagen
-- **Mobile Money**: TeleBirr
 - **Any app** with payment keywords in notifications
 
 ## Notification Patterns Detected
 
-The app looks for these patterns:
+The app looks for these patterns (Ethiopian Birr prioritized):
 
+**Ethiopian Birr:**
+- `ETB 500 debited from account`
+- `Birr 1,250.50 paid to Merchant`
+- `500 Birr withdrawn from ATM`
+- `Br 750 transferred to account`
+
+**Other Currencies:**
 - `Rs 250 debited from account`
 - `₹250.00 paid to Merchant Name`
-- `ETB 500 withdrawn from ATM`
 - `$25.50 charged to card`
 - `Payment of Rs 1,000 to PhonePe`
+
+**Generic Patterns:**
+- `Amount: 500 debited`
+- `Paid 250.00 to merchant`
+- `Transaction of 1000 successful`
 
 ## Privacy & Security
 

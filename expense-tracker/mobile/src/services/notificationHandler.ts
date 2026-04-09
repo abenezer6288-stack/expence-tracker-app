@@ -47,9 +47,39 @@ const PAYMENT_KEYWORDS = [
 ];
 
 const BANKING_APPS = [
+  // Ethiopian banks (PRIORITY)
+  'cbe', 'commercial bank of ethiopia',
+  'awash', 'aib', 'awash international',
+  'dashen', 'dashen bank',
+  'abyssinia', 'boa', 'bank of abyssinia',
+  'nib', 'nib international',
+  'wegagen', 'wegagen bank',
+  'united bank',
+  'coop', 'cooperative bank', 'oromia',
+  'abay', 'abay bank',
+  'berhan', 'berhan bank',
+  'bunna', 'bunna international',
+  'oromia international',
+  'enat', 'enat bank',
+  'debub', 'debub global',
+  'lion', 'lion international',
+  'addis', 'addis international',
+  'amhara', 'amhara bank',
+  'tsehay', 'tsehay bank',
+  'tsedey', 'tsedey bank',
+  'goh betoch', 'gohbetoch',
+  'hijra', 'hijra bank',
+  'zamzam', 'zam zam',
+  'gadaa', 'gadaa bank',
+  'rammis', 'rammis bank',
+  'siket', 'siket bank',
+  'sidama', 'sidama bank',
+  'ahadu', 'ahadu bank',
+  'telebirr', 'ethiotelecom',
+  // Indian banks and UPI
   'sbi', 'hdfc', 'icici', 'axis', 'kotak', 'pnb', 'bob', 'canara',
   'phonepe', 'paytm', 'gpay', 'googlepay', 'bhim', 'upi',
-  'cbe', 'dashen', 'awash', 'abyssinia', 'nib', 'wegagen', 'telebirr',
+  // Generic
   'bank', 'payment', 'wallet', 'finance'
 ];
 
@@ -73,11 +103,20 @@ function extractPaymentData(title: string, body: string) {
 
 function extractAmount(text: string): number | null {
   const patterns = [
-    /(?:rs\.?|inr|₹)\s*([0-9,]+(?:\.[0-9]{1,2})?)/i,
-    /(?:usd|\$)\s*([0-9,]+(?:\.[0-9]{1,2})?)/i,
+    // Ethiopian Birr (PRIORITY)
     /(?:etb|birr|br)\s*([0-9,]+(?:\.[0-9]{1,2})?)/i,
-    /(?:amount|amt|paid|debited|credited)[:\s]+(?:rs\.?|₹|\$)?\s*([0-9,]+(?:\.[0-9]{1,2})?)/i,
-    /([0-9,]+\.[0-9]{2})\s*(?:debited|credited|paid|spent)/i,
+    /([0-9,]+(?:\.[0-9]{1,2})?)\s*(?:etb|birr|br)/i,
+    // Indian Rupee
+    /(?:rs\.?|inr|₹)\s*([0-9,]+(?:\.[0-9]{1,2})?)/i,
+    /([0-9,]+(?:\.[0-9]{1,2})?)\s*(?:rs\.?|inr|₹)/i,
+    // US Dollar
+    /(?:usd|\$)\s*([0-9,]+(?:\.[0-9]{1,2})?)/i,
+    /([0-9,]+(?:\.[0-9]{1,2})?)\s*(?:usd|\$)/i,
+    // Generic amount patterns
+    /(?:amount|amt|paid|debited|credited|withdrawn|spent|transferred)[:\s]+(?:rs\.?|₹|\$|etb|birr|br)?\s*([0-9,]+(?:\.[0-9]{1,2})?)/i,
+    /([0-9,]+\.[0-9]{2})\s*(?:debited|credited|paid|spent|withdrawn|transferred)/i,
+    // Just numbers with currency context
+    /(?:paid|sent|received|debited|credited)\s+(?:of\s+)?([0-9,]+(?:\.[0-9]{1,2})?)/i,
   ];
 
   for (const pattern of patterns) {

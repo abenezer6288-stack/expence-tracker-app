@@ -261,14 +261,27 @@ export const AutoTrackSettingsScreen = () => {
 
         {/* Supported Banks */}
         <View style={styles.supportedSection}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Supported Notifications</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Supported Banks</Text>
           <View style={[styles.supportedCard, { backgroundColor: colors.card }]}>
+            <Text style={[styles.supportedTitle, { color: colors.text, fontWeight: '600', marginBottom: 8 }]}>
+              Ethiopian Banks (Priority)
+            </Text>
             <Text style={[styles.supportedText, { color: colors.textSecondary }]}>
-              • Bank SMS notifications{'\n'}
-              • UPI payment apps (PhonePe, Paytm, GPay){'\n'}
-              • Banking apps (SBI, HDFC, ICICI, Axis, etc.){'\n'}
-              • Card transaction alerts{'\n'}
-              • Any payment notification with amount
+              • CBE, Awash, Dashen, Bank of Abyssinia{'\n'}
+              • NIB, Wegagen, United, COOP, Abay{'\n'}
+              • Berhan, Bunna, Oromia, Enat, Debub{'\n'}
+              • Lion, Addis, Amhara, Tsehay, Tsedey{'\n'}
+              • Goh Betoch, Hijra, ZamZam, Gadaa{'\n'}
+              • Rammis, Siket, Sidama, Ahadu{'\n'}
+              • TeleBirr (Mobile Money)
+            </Text>
+            <Text style={[styles.supportedTitle, { color: colors.text, fontWeight: '600', marginTop: 12, marginBottom: 8 }]}>
+              Other Banks
+            </Text>
+            <Text style={[styles.supportedText, { color: colors.textSecondary }]}>
+              • Indian banks (SBI, HDFC, ICICI, etc.){'\n'}
+              • UPI apps (PhonePe, Paytm, GPay){'\n'}
+              • Any bank with payment notifications
             </Text>
           </View>
         </View>
@@ -339,5 +352,6 @@ const styles = StyleSheet.create({
     padding: SPACING.md,
     borderRadius: RADIUS.lg,
   },
+  supportedTitle: { fontSize: FONTS.sizes.md },
   supportedText: { fontSize: FONTS.sizes.sm, lineHeight: 22 },
 });
