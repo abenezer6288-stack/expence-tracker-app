@@ -18,6 +18,7 @@ export const AutoTrackSettingsScreen = () => {
 
   useEffect(() => {
     loadSettings();
+    processPendingPayments();
   }, []);
 
   const loadSettings = async () => {
@@ -26,10 +27,69 @@ export const AutoTrackSettingsScreen = () => {
       const autoSave = await storage.getItem('autoSaveEnabled');
       setAutoTrackEnabled(autoTrack === 'true');
       setAutoSaveEnabled(autoSave === 'true');
+      
+      // If auto-tracking is enabled, start listening
+      if (autoTrack === 'true') {
+        notificationService.startListening((payment) => {
+          console.log('Payment detected:', payment);
+          
+          if (autoSave === 'true') {
+            notificationService.autoSaveExpense(payment, 'user-id');
+            Alert.alert('Expense Added', `${payment.amount} at ${payment.merchant}`);
+          } else {
+            Alert.alert(
+              'Payment Detected',
+              `Amount: ${payment.amount}\nMerchant: ${payment.merchant}`,
+              [
+                { text: 'Ignore', style: 'cancel' },
+                {
+                  text: 'Add Expense',
+                  onPress: () => {
+                    navigation.navigate('AddExpense', {
+                      prefill: {
+                        amount: payment.amount,
+                        merchant: payment.merchant,
+                        date: payment.date,
+                      },
+                    });
+                  },
+                },
+              ]
+            );
+          }
+        });
+      }
     } catch (error) {
       console.error('Failed to load settings:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const processPendingPayments = async () => {
+    try {
+      const pendingPaymentsStr = await storage.getItem('pendingPayments');
+      if (pendingPaymentsStr) {
+        const pendingPayments = JSON.parse(pendingPaymentsStr);
+        
+        if (pendingPayments.length > 0) {
+          // Process all pending payments
+          for (const payment of pendingPayments) {
+            await notificationService.autoSaveExpense(payment, 'user-id');
+          }
+          
+          // Clear pending payments
+          await storage.setItem('pendingPayments', JSON.stringify([]));
+          
+          Alert.alert(
+            'Expenses Added',
+            `${pendingPayments.length} expense(s) were automatically tracked while the app was closed.`,
+            [{ text: 'OK' }]
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Failed to process pending payments:', error);
     }
   };
 
@@ -39,8 +99,20 @@ export const AutoTrackSettingsScreen = () => {
       if (!hasPermission) {
         Alert.alert(
           'Permission Required',
-          'Please enable notification permissions to use auto-tracking',
-          [{ text: 'OK' }]
+          'To enable auto-tracking, you need to grant notification access:\n\n' +
+          '1. Tap "Open Settings" below\n' +
+          '2. Find "Expense Tracker" in the list\n' +
+          '3. Enable notification access\n' +
+          '4. Return to the app',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            {
+              text: 'Open Settings',
+              onPress: async () => {
+                await notificationService.requestPermissions();
+              },
+            },
+          ]
         );
         return;
       }
@@ -76,6 +148,12 @@ export const AutoTrackSettingsScreen = () => {
           );
         }
       });
+
+      Alert.alert(
+        'Auto-Tracking Enabled',
+        'The app will now monitor payment notifications from banking apps and automatically track your expenses.',
+        [{ text: 'OK' }]
+      );
     } else {
       notificationService.stopListening();
     }

@@ -1,5 +1,6 @@
-import * as Notifications from 'expo-notifications';
 import { expenseService } from './expenseService';
+import RNAndroidNotificationListener from 'react-native-android-notification-listener';
+import { Platform } from 'react-native';
 
 // Payment keywords to detect bank/payment notifications
 const PAYMENT_KEYWORDS = [
@@ -21,6 +22,7 @@ interface ExtractedPayment {
 export class NotificationService {
   private static instance: NotificationService;
   private isListening = false;
+  private paymentCallback: ((payment: ExtractedPayment) => void) | null = null;
 
   static getInstance(): NotificationService {
     if (!NotificationService.instance) {
@@ -31,31 +33,34 @@ export class NotificationService {
 
   // Request notification permissions
   async requestPermissions(): Promise<boolean> {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-
-    if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
+    if (Platform.OS !== 'android') {
+      return false;
     }
 
-    return finalStatus === 'granted';
+    try {
+      // Check if notification listener permission is granted
+      const status = await RNAndroidNotificationListener.getPermissionStatus();
+      
+      if (status !== 'authorized') {
+        // Open settings to grant permission
+        await RNAndroidNotificationListener.requestPermission();
+        return false; // User needs to manually enable in settings
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Permission request failed:', error);
+      return false;
+    }
   }
 
   // Start listening to notifications
   async startListening(onPaymentDetected: (payment: ExtractedPayment) => void) {
     if (this.isListening) return;
-
-    // Configure notification handler
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
-        shouldShowBanner: true,
-        shouldShowList: true,
-      }),
-    });
+    if (Platform.OS !== 'android') {
+      console.log('Notification listener only works on Android');
+      return;
+    }
 
     const hasPermission = await this.requestPermissions();
     if (!hasPermission) {
@@ -64,41 +69,60 @@ export class NotificationService {
     }
 
     this.isListening = true;
+    this.paymentCallback = onPaymentDetected;
 
-    // Listen for notifications when app is in foreground
-    Notifications.addNotificationReceivedListener((notification) => {
-      this.handleNotification(notification, onPaymentDetected);
+    // Start listening to all notifications
+    RNAndroidNotificationListener.onNotificationPosted((notification: any) => {
+      this.handleAndroidNotification(notification);
     });
 
-    // Listen for notification responses (when user taps notification)
-    Notifications.addNotificationResponseReceivedListener((response) => {
-      this.handleNotification(response.notification, onPaymentDetected);
-    });
-
-    console.log('Notification listener started');
+    console.log('Android notification listener started');
   }
 
   // Stop listening
   stopListening() {
     this.isListening = false;
+    this.paymentCallback = null;
+    if (Platform.OS === 'android') {
+      RNAndroidNotificationListener.stop();
+    }
   }
 
-  // Handle incoming notification
-  private handleNotification(
-    notification: Notifications.Notification,
-    onPaymentDetected: (payment: ExtractedPayment) => void
-  ) {
-    const { title, body } = notification.request.content;
-    const fullText = `${title || ''} ${body || ''}`.toLowerCase();
+  // Handle Android notification from other apps
+  private handleAndroidNotification(notification: any) {
+    if (!this.isListening || !this.paymentCallback) return;
 
-    // Check if it's a payment notification
-    if (this.isPaymentNotification(fullText)) {
-      const extracted = this.extractPaymentData(title || '', body || '');
-      if (extracted.amount) {
-        console.log('Payment detected:', extracted);
-        onPaymentDetected(extracted);
+    try {
+      const { title, text, app } = notification;
+      const fullText = `${title || ''} ${text || ''}`.toLowerCase();
+
+      // Check if it's from a banking/payment app
+      const isBankingApp = this.isBankingApp(app);
+      
+      // Check if it's a payment notification
+      if (isBankingApp || this.isPaymentNotification(fullText)) {
+        const extracted = this.extractPaymentData(title || '', text || '');
+        if (extracted.amount && extracted.amount > 0) {
+          console.log('Payment detected from:', app, extracted);
+          this.paymentCallback(extracted);
+        }
       }
+    } catch (error) {
+      console.error('Error handling notification:', error);
     }
+  }
+
+  // Check if app is a banking/payment app
+  private isBankingApp(packageName: string): boolean {
+    const bankingApps = [
+      'sbi', 'hdfc', 'icici', 'axis', 'kotak', 'pnb', 'bob', 'canara',
+      'phonepe', 'paytm', 'gpay', 'googlepay', 'bhim', 'upi',
+      'cbe', 'dashen', 'awash', 'abyssinia', 'nib', 'wegagen', 'telebirr',
+      'bank', 'payment', 'wallet', 'finance'
+    ];
+
+    const lowerPackage = packageName.toLowerCase();
+    return bankingApps.some(app => lowerPackage.includes(app));
   }
 
   // Check if notification is payment-related
