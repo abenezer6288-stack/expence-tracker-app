@@ -1,6 +1,13 @@
 import { expenseService } from './expenseService';
-import RNAndroidNotificationListener from 'react-native-android-notification-listener';
 import { Platform } from 'react-native';
+
+// Safely import the notification listener
+let RNAndroidNotificationListener: any = null;
+try {
+  RNAndroidNotificationListener = require('react-native-android-notification-listener').default;
+} catch (error) {
+  console.log('Notification listener module not available:', error);
+}
 
 // Payment keywords to detect bank/payment notifications
 const PAYMENT_KEYWORDS = [
@@ -37,6 +44,11 @@ export class NotificationService {
       return false;
     }
 
+    if (!RNAndroidNotificationListener) {
+      console.log('Notification listener module not available');
+      return false;
+    }
+
     try {
       // Check if notification listener permission is granted
       const status = await RNAndroidNotificationListener.getPermissionStatus();
@@ -60,6 +72,11 @@ export class NotificationService {
     if (this.isListening) return;
     if (Platform.OS !== 'android') {
       console.log('Notification listener only works on Android');
+      return;
+    }
+
+    if (!RNAndroidNotificationListener) {
+      console.log('Notification listener module not available - feature disabled');
       return;
     }
 
@@ -90,8 +107,12 @@ export class NotificationService {
   stopListening() {
     this.isListening = false;
     this.paymentCallback = null;
-    if (Platform.OS === 'android') {
-      RNAndroidNotificationListener.stop();
+    if (Platform.OS === 'android' && RNAndroidNotificationListener) {
+      try {
+        RNAndroidNotificationListener.stop();
+      } catch (error) {
+        console.error('Error stopping notification listener:', error);
+      }
     }
   }
 
