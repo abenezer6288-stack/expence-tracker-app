@@ -50,6 +50,7 @@ export class NotificationService {
       return true;
     } catch (error) {
       console.error('Permission request failed:', error);
+      console.log('Notification listener may not be properly configured');
       return false;
     }
   }
@@ -62,21 +63,27 @@ export class NotificationService {
       return;
     }
 
-    const hasPermission = await this.requestPermissions();
-    if (!hasPermission) {
-      console.log('Notification permission not granted');
-      return;
+    try {
+      const hasPermission = await this.requestPermissions();
+      if (!hasPermission) {
+        console.log('Notification permission not granted');
+        return;
+      }
+
+      this.isListening = true;
+      this.paymentCallback = onPaymentDetected;
+
+      // Start listening to all notifications
+      RNAndroidNotificationListener.onNotificationPosted((notification: any) => {
+        this.handleAndroidNotification(notification);
+      });
+
+      console.log('Android notification listener started');
+    } catch (error) {
+      console.error('Failed to start notification listener:', error);
+      console.log('Auto-tracking feature may not be available');
+      this.isListening = false;
     }
-
-    this.isListening = true;
-    this.paymentCallback = onPaymentDetected;
-
-    // Start listening to all notifications
-    RNAndroidNotificationListener.onNotificationPosted((notification: any) => {
-      this.handleAndroidNotification(notification);
-    });
-
-    console.log('Android notification listener started');
   }
 
   // Stop listening
